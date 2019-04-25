@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sample_list_load_error">Loading Error</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="steps_count">10</string>
+    <string name="title">Recipe Title</string>
+    <string name="configure">Choose a recipe !</string>
+    <string name="add_widget">Add widget</string>
+    <string name="measure">Measure</string>
+    <string name="widget_configuration">Widget Configuration</string>
+</resources>
