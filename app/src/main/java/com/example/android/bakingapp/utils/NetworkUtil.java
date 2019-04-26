@@ -1,19 +1,14 @@
 package com.example.android.bakingapp.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Patterns;
 import android.widget.Toast;
-import android.util.Patterns;
-
-import java.net.URL;
-
-import retrofit2.http.Url;
 
 public class NetworkUtil {
     private Activity mActivity;
-    private boolean mInternetConnected;
     private String mUrl;
     private boolean isUrl;
 
@@ -23,19 +18,16 @@ public class NetworkUtil {
     }
 
     public boolean internetConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mActivity.getSystemService(mActivity.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            mInternetConnected = true;
-        } else{
-            mInternetConnected = false;
+        ConnectivityManager manager = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
         }
-        return mInternetConnected;
+        return false;
     }
 
     public boolean urlCheck(){
-        isUrl = Patterns.WEB_URL.matcher(mUrl.toString().trim()).matches();
+        isUrl = Patterns.WEB_URL.matcher(mUrl.trim()).matches();
         return isUrl;
     }
 
