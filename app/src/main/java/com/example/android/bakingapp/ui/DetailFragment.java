@@ -166,19 +166,6 @@ public class DetailFragment extends Fragment {
         }));
     }
 
-   // @Override
-   // public void onConfigurationChanged(Configuration newConfig) {
-        //super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        //if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //exoUtil.fullScreenMode();
-
-        //} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            //exoUtil.nonFullScreenMode();
-
-       // }
-    //}
 
 
 

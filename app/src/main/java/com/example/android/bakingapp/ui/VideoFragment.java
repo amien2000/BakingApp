@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.Guideline;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class VideoFragment extends Fragment {
     Uri uri;
     Guideline horizontalHalf;
 
+
     public VideoFragment() {
     }
 
@@ -60,7 +62,6 @@ public class VideoFragment extends Fragment {
 
             Bundle videoExtras = getActivity().getIntent().getBundleExtra("bundle");
             position = videoExtras.getInt("position");
-            //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(position.toString());
 
             stepArrayList = videoExtras.getParcelableArrayList("steps");
 
@@ -79,17 +80,19 @@ public class VideoFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        renderFragmentView(getActivity().getResources().getConfiguration());
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            horizontalHalf.setGuidelinePercent(1);
-            exoUtil.fullScreenMode();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            horizontalHalf.setGuidelinePercent(0.5f);
-            exoUtil.nonFullScreenMode();
-        }
+
+            renderFragmentView(newConfig);
+
     }
 
     @Override
@@ -98,6 +101,22 @@ public class VideoFragment extends Fragment {
         super.onDestroy();
         if (exoUtil != null) {
             exoUtil.releasePlayer();
+        }
+    }
+
+    public void renderFragmentView(Configuration newConfig){
+
+        if(getActivity().findViewById(R.id.linearLayoutsw600dp) == null) {
+            // Checks the orientation of the screen
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                horizontalHalf.setGuidelinePercent(1);
+                exoUtil.fullScreenMode();
+                textViewDescription.setVisibility(View.INVISIBLE);
+            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                horizontalHalf.setGuidelinePercent(0.5f);
+                exoUtil.nonFullScreenMode();
+                textViewDescription.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

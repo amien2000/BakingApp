@@ -1,6 +1,7 @@
 package com.example.android.bakingapp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.android.bakingapp.adapter.IngredientAdapter;
 import com.example.android.bakingapp.models.Ingredient;
@@ -40,6 +42,7 @@ public class DetailActivity extends AppCompatActivity {
     Uri uri;
     ExoUtil exoUtil;
     Bundle extras;
+
 
 
     @Override
@@ -77,6 +80,8 @@ public class DetailActivity extends AppCompatActivity {
             //In two-pane mode we need the introduction video to be played for each recipe.
             //The position of the video in array list is 0.
             int stepPosition = 0;
+
+
 
             textViewDescription = findViewById(R.id.textViewDescription);
 
