@@ -20,7 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailActivity"
-            android:resizeableActivity="true"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"

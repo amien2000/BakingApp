@@ -14,6 +14,9 @@ import com.example.android.bakingapp.models.Recipe;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecyclerHolder> {
 
     private Context context;
@@ -55,15 +58,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.Recycler
     }
 
     class RecyclerHolder extends RecyclerView.ViewHolder {
-        TextView recipeName, recipeStepsCount, recipeServe;
-        ImageView recipeImage;
+
+
+        @BindView(R.id.recipe_name) TextView recipeName;
+        @BindView(R.id.recipe_steps_count) TextView recipeStepsCount;
+        @BindView(R.id.image) ImageView recipeImage;
 
         RecyclerHolder(View itemView) {
             super(itemView);
-            recipeName = (TextView) itemView.findViewById(R.id.recipe_name);
-            recipeStepsCount = (TextView) itemView.findViewById(R.id.recipe_steps_count);
-            recipeImage = (ImageView) itemView.findViewById(R.id.image);
-
+            ButterKnife.bind(this,itemView);
         }
     }
 

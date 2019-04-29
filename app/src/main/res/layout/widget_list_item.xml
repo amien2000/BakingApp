@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#80000000"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="1dp">
 
     <TextView
         android:id="@+id/widget_recipe_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        android:textStyle="bold"
         android:textColor="@color/white"
-        android:textSize="18sp"/>
+        android:textSize="8sp"
+        android:textStyle="bold"
+        android:layout_margin="1dp"/>
 
     <TextView
         android:id="@+id/widget_recipe_measure"
@@ -20,6 +22,6 @@
         android:layout_height="wrap_content"
         android:text="@string/measure"
         android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_alignParentRight="true"/>
-</RelativeLayout>
+        android:textSize="8sp"
+        android:layout_margin="1dp"/>
+</LinearLayout>

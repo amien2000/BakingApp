@@ -13,6 +13,9 @@ import com.example.android.bakingapp.models.Step;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
 
     private ArrayList<Step> stepArrayList;
@@ -25,15 +28,13 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
 
     class StepViewHolder extends RecyclerView.ViewHolder {
 
-        TextView idTextView;
-        TextView stepTextView;
+        @BindView(R.id.tv_id) TextView idTextView;
+        @BindView(R.id.tv_short_description) TextView stepTextView;
 
         public StepViewHolder(View itemView) {
             super(itemView);
-            idTextView = itemView.findViewById(R.id.tv_id);
-            stepTextView = itemView.findViewById(R.id.tv_short_description);
+            ButterKnife.bind(this,itemView);
         }
-
     }
 
     @NonNull
