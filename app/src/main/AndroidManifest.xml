@@ -15,7 +15,6 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,7 +42,8 @@
         </receiver>
 
         <activity android:name=".widget.RecipeWidgetConfigureActivity"
-            android:label="@string/widget_configuration">
+            android:label="@string/widget_configuration"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

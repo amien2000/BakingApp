@@ -18,6 +18,7 @@ import com.example.android.bakingapp.MainActivity;
  */
 public class RecipeWidget extends AppWidgetProvider {
 
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -25,40 +26,37 @@ public class RecipeWidget extends AppWidgetProvider {
         String title=database.getRecipeTitle(appWidgetId);
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-        views.setTextViewText(R.id.recipe_title, title);
 
+        //Populate widget with recipe data
+        views.setTextViewText(R.id.recipe_title, title);
         Intent intent = new Intent(context, WidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         views.setRemoteAdapter(R.id.listViewWidget, intent);
 
-
-        // Set the PlantDetailActivity intent to launch when clicked
+        //Launch app when widget is clicked
         Intent appIntent = new Intent(context, MainActivity.class);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.listViewWidget, appPendingIntent);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, 0);
+        views.setOnClickPendingIntent(R.id.recipe_title, appPendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
-
-
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-
         }
     }
-
 
     @Override
     public void onEnabled(Context context) {

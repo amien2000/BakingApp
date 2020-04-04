@@ -8,5 +8,9 @@
     <string name="configure">Please choose your favourite recipe!</string>
     <string name="add_widget">Add widget</string>
     <string name="measure">Measure</string>
-    <string name="widget_configuration">Widget Configuration</string>
+    <string name="widget_configuration">Baking App Widget Configuration</string>
+    <string name="alert_dialog_title">Internet Connection Problem</string>
+    <string name="alert_dialog_message">Please ensure internet connection is available</string>
+    <string name="retry">Retry</string>
+    <string name="exit">Exit</string>
 </resources>
