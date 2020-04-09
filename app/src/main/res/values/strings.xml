@@ -13,4 +13,7 @@
     <string name="alert_dialog_message">Please ensure internet connection is available</string>
     <string name="retry">Retry</string>
     <string name="exit">Exit</string>
+    <string name="space"> </string>
+    <string name="no_video">No video content</string>
+    <string name="tablet_instruction">TO BEGIN, PLEASE CLICK STEPS TAB AND CHOOSE STEP</string>
 </resources>

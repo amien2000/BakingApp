@@ -38,9 +38,9 @@ public class NetworkUtil {
 
     public void networkMessage(){
         if(!internetConnection()) {
-            Toast.makeText(mActivity,"No internet connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity,R.string.alert_dialog_title, Toast.LENGTH_LONG).show();
         }else if (!urlCheck()){
-            Toast.makeText(mActivity,"No Video Content", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity,R.string.no_video, Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -22,6 +22,9 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.view.View.GONE;
 
 public class ExoUtil {
@@ -54,7 +57,7 @@ public class ExoUtil {
             // String userAgent = Util.getUserAgent(this, "BakingApp");
 
             DataSource.Factory dataSourceFactory =
-                    new DefaultDataSourceFactory(mActivity, Util.getUserAgent(mActivity, "Baking App"));
+                    new DefaultDataSourceFactory(mActivity, Util.getUserAgent(mActivity, String.valueOf(R.string.app_name)));
 
             MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri);
 
@@ -73,6 +76,7 @@ public class ExoUtil {
             // Create an instance of the ExoPlayer.
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
 
+
             playerView = mActivity.findViewById(R.id.playerView);
             playerView.setPlayer(simpleExoPlayer);
 
@@ -81,7 +85,7 @@ public class ExoUtil {
             // String userAgent = Util.getUserAgent(this, "BakingApp");
 
             DataSource.Factory dataSourceFactory =
-                    new DefaultDataSourceFactory(mActivity, Util.getUserAgent(mActivity, "Baking App"));
+                    new DefaultDataSourceFactory(mActivity, Util.getUserAgent(mActivity, String.valueOf(R.string.app_name)));
 
             MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri);
 

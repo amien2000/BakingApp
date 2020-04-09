@@ -1,10 +1,10 @@
 package com.example.android.bakingapp;
 
-
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().add(R.id.fragmentOne, detailFragment).commit(); }
 
         if(tablet != null){
-                textViewDescription.setText("TO BEGIN, PLEASE CLICK STEPS TAB AND CHOOSE STEP");
+                textViewDescription.setText(R.string.tablet_instruction);
         }
     }
 }

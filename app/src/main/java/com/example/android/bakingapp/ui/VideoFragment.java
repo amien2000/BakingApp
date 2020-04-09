@@ -34,9 +34,7 @@ public class VideoFragment extends Fragment {
     Uri uri;
     View rootView;
 
-    //@Nullable @BindView(R.id.linearLayoutsw600dp) LinearLayout tablet;
     @BindView(R.id.playerView) PlayerView playerView;
-    @BindView(R.id.horizontalHalf) Guideline horizontalHalf;
     @BindView(R.id.textViewDescription) TextView textViewDescription;
 
     public VideoFragment() {
@@ -53,8 +51,6 @@ public class VideoFragment extends Fragment {
         stepArrayList = videoExtras.getParcelableArrayList("steps");
         description = stepArrayList.get(position).getDescription();
         textViewDescription.setText(description);
-
-
         return rootView;
     }
 
@@ -95,11 +91,9 @@ public class VideoFragment extends Fragment {
         if(getActivity().findViewById(R.id.linearLayoutsw600dp) == null) {
             // Checks the orientation of the screen
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                horizontalHalf.setGuidelinePercent(1);
                 exoUtil.fullScreenMode();
-                textViewDescription.setVisibility(View.INVISIBLE);
+                textViewDescription.setVisibility(View.GONE);
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                horizontalHalf.setGuidelinePercent(0.5f);
                 exoUtil.nonFullScreenMode();
                 textViewDescription.setVisibility(View.VISIBLE);
             }
