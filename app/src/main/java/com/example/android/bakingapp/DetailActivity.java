@@ -4,13 +4,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.android.bakingapp.models.Ingredient;
 import com.example.android.bakingapp.models.Step;
 import com.example.android.bakingapp.ui.DetailFragment;
+import com.example.android.bakingapp.ui.VideoFragment;
 
 import java.util.ArrayList;
 
@@ -25,8 +24,9 @@ public class DetailActivity extends AppCompatActivity {
     String url;
     String description;
     Bundle extras;
+    VideoFragment videoFragment;
+    DetailFragment detailFragment;
 
-    @Nullable @BindView(R.id.textViewDescription) TextView textViewDescription;
     @Nullable @BindView(R.id.linearLayoutsw600dp) LinearLayout tablet;
 
     @Override
@@ -39,7 +39,10 @@ public class DetailActivity extends AppCompatActivity {
         name = extras.getString("name");
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        renderView();
+
+        if(savedInstanceState == null) {
+            addTabFragment();
+        }
     }
 
     @Override
@@ -58,18 +61,12 @@ public class DetailActivity extends AppCompatActivity {
         name=savedInstanceState.getString("name");
     }
 
-    public void renderView(){
-
+    public void addTabFragment(){
         DetailFragment detailFragment = new DetailFragment();
         detailFragment.setArguments(extras);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        //To prevent fragment overlapping during configuration change, only add when there isn't fragment available.
-        if(fragmentManager.findFragmentById(R.id.fragmentOne)==null) {
-            fragmentManager.beginTransaction().add(R.id.fragmentOne, detailFragment).commit(); }
-
-        if(tablet != null){
-                textViewDescription.setText(R.string.tablet_instruction);
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentOne, detailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

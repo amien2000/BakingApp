@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.example.android.bakingapp.R;
@@ -38,9 +39,13 @@ public class NetworkUtil {
 
     public void networkMessage(){
         if(!internetConnection()) {
-            Toast.makeText(mActivity,R.string.alert_dialog_title, Toast.LENGTH_LONG).show();
+            Toast toast = Toast.makeText(mActivity,R.string.alert_dialog_title,Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
         }else if (!urlCheck()){
-            Toast.makeText(mActivity,R.string.no_video, Toast.LENGTH_LONG).show();
+            Toast toast = Toast.makeText(mActivity,R.string.no_video,Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER,0,0);
+            toast.show();
         }
     }
 }

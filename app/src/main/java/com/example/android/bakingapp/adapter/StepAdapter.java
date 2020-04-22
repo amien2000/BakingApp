@@ -1,6 +1,7 @@
 package com.example.android.bakingapp.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +27,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
         this.context = context;
     }
 
-    class StepViewHolder extends RecyclerView.ViewHolder {
+    class StepViewHolder extends RecyclerView.ViewHolder  {
 
         @BindView(R.id.tv_id) TextView idTextView;
         @BindView(R.id.tv_short_description) TextView stepTextView;
@@ -61,6 +62,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
             holder.idTextView.setText(String.valueOf(stepNumber));
         }
         holder.stepTextView.setText(stepArrayList.get(position).getShortDescription());
+
     }
 
 

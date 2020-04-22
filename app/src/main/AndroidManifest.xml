@@ -20,13 +20,11 @@
         </activity>
         <activity android:name=".DetailActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".VideoActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".DetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:parentActivityName=".DetailActivity">
         </activity>
 
         <receiver android:name=".widget.RecipeWidget">

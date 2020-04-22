@@ -16,4 +16,8 @@
     <string name="space"> </string>
     <string name="no_video">No video content</string>
     <string name="tablet_instruction">TO BEGIN, PLEASE CLICK STEPS TAB AND CHOOSE STEP</string>
+    <string name="btn_previous"><![CDATA[< PREVIOUS]]></string>
+    <string name="btn_next"><![CDATA[NEXT >]]></string>
+    <string name="previous_step">Click previous step or back</string>
+    <string name="next_step">Click next step or back</string>
 </resources>

@@ -6,29 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:layout_margin="4dp"
-    android:background="@color/white"
     android:id="@+id/linearLayoutsw600dp"
     >
 
-
     <FrameLayout
         android:id="@+id/fragmentOne"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="2dp"
-        tools:context=".DetailActivity">
+        tools:context=".DetailActivity" />
 
-    </FrameLayout>
-
-    <fragment
+    <FrameLayout
         android:id="@+id/video_fragment"
-        android:name="com.example.android.bakingapp.ui.VideoFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/white"
-        android:padding="2dp"></fragment>
-
+        android:padding="2dp"
+        tools:context=".DetailActivity">
+    </FrameLayout>
 
 </LinearLayout>
+
+
+
+
+

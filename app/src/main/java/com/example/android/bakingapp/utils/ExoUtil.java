@@ -1,13 +1,12 @@
 package com.example.android.bakingapp.utils;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.view.View;
 
-import com.example.android.bakingapp.MainActivity;
 import com.example.android.bakingapp.R;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -22,11 +21,6 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static android.view.View.GONE;
-
 public class ExoUtil {
 
     private View mRootView;
@@ -34,24 +28,30 @@ public class ExoUtil {
     private PlayerView playerView;
     private SimpleExoPlayer simpleExoPlayer;
 
+    //16/4
+    private boolean playWhenReady = true;
+    private int currentWindowIndex;
+    private long currentPosition;
+
     public ExoUtil (Activity activity, View rootView){
         mActivity = activity;
         mRootView = rootView;
     }
 
-    public void initializePlayer(Uri mediaUri) {
+    public void initializePlayerFragment(Uri mediaUri, boolean playWhenReady, int currentWindowIndex, long currentPosition) {
         if (simpleExoPlayer == null) {
 
             TrackSelector trackSelector = new DefaultTrackSelector();
             //Default buffering policy
             LoadControl loadControl = new DefaultLoadControl();
+
             DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(mActivity);
+
             // Create an instance of the ExoPlayer.
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
 
-            playerView = mRootView.findViewById(R.id.playerView);
+            playerView = mActivity.findViewById(R.id.playerView);
             playerView.setPlayer(simpleExoPlayer);
-
 
             // Prepare the MediaSource.
             // String userAgent = Util.getUserAgent(this, "BakingApp");
@@ -60,9 +60,12 @@ public class ExoUtil {
                     new DefaultDataSourceFactory(mActivity, Util.getUserAgent(mActivity, String.valueOf(R.string.app_name)));
 
             MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri);
+            if (currentPosition != C.TIME_UNSET) {
+                simpleExoPlayer.seekTo(currentPosition);
+            }
 
             simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
+            simpleExoPlayer.setPlayWhenReady(playWhenReady);
         }
     }
 
@@ -76,10 +79,8 @@ public class ExoUtil {
             // Create an instance of the ExoPlayer.
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
 
-
             playerView = mActivity.findViewById(R.id.playerView);
             playerView.setPlayer(simpleExoPlayer);
-
 
             // Prepare the MediaSource.
             // String userAgent = Util.getUserAgent(this, "BakingApp");
@@ -89,29 +90,38 @@ public class ExoUtil {
 
             MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri);
 
+
             simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
+            simpleExoPlayer.setPlayWhenReady(playWhenReady);
         }
     }
 
 
     public void fullScreenMode() {
-        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    // Set the content to appear under the system bars so that the
+                    // content doesn't resize when the system bars hide and show.
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    // Hide the nav bar and status bar
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        } else{
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
     }
 
     public void nonFullScreenMode() {
-            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
-
 
     /**
      * Release ExoPlayer.
@@ -121,4 +131,27 @@ public class ExoUtil {
             simpleExoPlayer.release();
             simpleExoPlayer = null;
     }
+
+    public void updateCurrentPosition() {
+        if (simpleExoPlayer != null) {
+            playWhenReady = simpleExoPlayer.getPlayWhenReady();
+            currentWindowIndex = simpleExoPlayer.getCurrentWindowIndex();
+            currentPosition = simpleExoPlayer.getCurrentPosition();
+        }
+    }
+
+    public boolean isPlayWhenReady() {
+        return playWhenReady;
+    }
+
+    public int getCurrentWindowIndex() {
+        return currentWindowIndex;
+    }
+
+    public long getCurrentPosition() {
+        return currentPosition;
+    }
+
+
+
 }
