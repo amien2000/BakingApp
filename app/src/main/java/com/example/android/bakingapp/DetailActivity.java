@@ -19,13 +19,9 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity {
 
     String name;
-    private ArrayList<Ingredient> ingredientArrayList;
     private ArrayList<Step> stepArrayList;
-    String url;
-    String description;
+    private ArrayList<Ingredient> ingredientArrayList;
     Bundle extras;
-    VideoFragment videoFragment;
-    DetailFragment detailFragment;
 
     @Nullable @BindView(R.id.linearLayoutsw600dp) LinearLayout tablet;
 
@@ -48,22 +44,26 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("name",name);
         savedInstanceState.putParcelableArrayList("steps",stepArrayList);
         savedInstanceState.putParcelableArrayList("ingredients",ingredientArrayList);
-        savedInstanceState.putString("name",name);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        name=savedInstanceState.getString("name");
         stepArrayList=savedInstanceState.getParcelableArrayList("steps");
         ingredientArrayList=savedInstanceState.getParcelableArrayList("ingredients");
-        name=savedInstanceState.getString("name");
     }
 
     public void addTabFragment(){
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.setArguments(extras);
+        name = extras.getString("name");
+        stepArrayList = extras.getParcelableArrayList("steps");
+        ingredientArrayList = extras.getParcelableArrayList("ingredients");
+
+        DetailFragment detailFragment = DetailFragment.newDetailFragmentInstance(name,stepArrayList,
+                ingredientArrayList);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentOne, detailFragment)
                 .addToBackStack(null)

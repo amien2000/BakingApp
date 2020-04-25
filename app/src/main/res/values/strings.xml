@@ -20,4 +20,7 @@
     <string name="btn_next"><![CDATA[NEXT >]]></string>
     <string name="previous_step">Click previous step or back</string>
     <string name="next_step">Click next step or back</string>
+
+    <string name="tab_1_ingredients">Ingredients</string>
+    <string name="tab_2_steps">Steps</string>
 </resources>

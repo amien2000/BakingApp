@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity implements RetrofitUtil.OnRe
                 startActivity(details);
 
             }
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
+            //@Override
+            //public void onLongItemClick(View view, int position) {
+            //}
         }));
     }
 

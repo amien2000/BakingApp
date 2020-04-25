@@ -1,7 +1,6 @@
 package com.example.android.bakingapp.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.VideoActivity;
@@ -28,20 +26,26 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.GONE;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment {
 
-    ArrayList<Ingredient> ingredientArrayList;
-    ArrayList<Step> stepArrayList;
-
-    String url;
-    String description;
-    String name;
-    Uri uri;
     Step step;
+    String name;
+    StepAdapter stepAdapter;
+    ArrayList<Step> stepArrayList;
+    ArrayList<Ingredient> ingredientArrayList;
+
+    private static final String ARG_REC_NAME = "name";
+    private static final String ARG_STEPS = "steps";
+    private static final String ARG_INGREDIENTS = "ingredients";
+
+    private static final String KEY_LAST_TAB = "lastTabPosition";
+    private static final String KEY_LAST_STEP = "lastStepPosition";
 
     @BindView(R.id.tabHost) TabHost host;
     @BindView(R.id.rv_ingredients) RecyclerView ingredientRecyclerView;
@@ -51,29 +55,38 @@ public class DetailFragment extends Fragment {
     int lastStepPosition = 0;
     int lastTabPosition = 0;
 
+    public static DetailFragment newDetailFragmentInstance(String name, ArrayList<Step> steps,
+                                                           ArrayList<Ingredient> ingredients){
+        DetailFragment detailFragment = new DetailFragment();
+        Bundle detailBundle = new Bundle();
+        detailBundle.putString(ARG_REC_NAME,name);
+        detailBundle.putParcelableArrayList(ARG_STEPS,steps);
+        detailBundle.putParcelableArrayList(ARG_INGREDIENTS,ingredients);
+        detailFragment.setArguments(detailBundle);
+        return detailFragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        Bundle extras = getArguments();
-        ingredientArrayList = extras.getParcelableArrayList("ingredients");
-        stepArrayList = extras.getParcelableArrayList("steps");
-        name = extras.getString("name");
+        name = getArguments().getString(ARG_REC_NAME);
+        stepArrayList = getArguments().getParcelableArrayList(ARG_STEPS);
+        ingredientArrayList = getArguments().getParcelableArrayList(ARG_INGREDIENTS);
 
         setupTab();
         setupIngredientRecyclerView();
         setupStepRecyclerView();
 
         if (savedInstanceState==null){
-            replaceVideoFragment(stepArrayList.get(lastStepPosition));
+           replaceVideoFragment(stepArrayList.get(lastStepPosition));
         }
-
         if (getActivity().findViewById(R.id.linearLayoutsw600dp) != null) {
             stepItemTouchListenerTablet();
         } else {
-            stepItemTouchListenerOnePane();
-
+            stepItemTouchListenerPhone();
         }
         return rootView;
     }
@@ -81,39 +94,42 @@ public class DetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("lastStepPosition", lastStepPosition);
-        outState.putInt("lastTabPosition", lastTabPosition);
-        outState.putParcelableArrayList("stepArrayList", stepArrayList);
+        outState.putInt(KEY_LAST_STEP, lastStepPosition);
+        outState.putInt(KEY_LAST_TAB, lastTabPosition);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+            setupStepRecyclerView();// To ensure scroll to position work after orientation change
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
-            lastStepPosition = savedInstanceState.getInt("lastStepPosition");
-            lastTabPosition = savedInstanceState.getInt("lastTabPosition");
-            Toast.makeText(getActivity(),String.valueOf(lastStepPosition),Toast.LENGTH_LONG).show();
+            lastStepPosition = savedInstanceState.getInt(KEY_LAST_STEP);
+            lastTabPosition = savedInstanceState.getInt(KEY_LAST_TAB);
         }
     }
 
     private void setupTab() {
         host.setup();
         //Tab Ingredients
-        TabHost.TabSpec spec = host.newTabSpec("Ingredients");
+        TabHost.TabSpec spec = host.newTabSpec(getString(R.string.tab_1_ingredients));
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Ingredients");
+        spec.setIndicator(getString(R.string.tab_1_ingredients));
         host.addTab(spec);
         //Tab Steps
-        spec = host.newTabSpec("Steps");
+        spec = host.newTabSpec(getString(R.string.tab_2_steps));
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Steps");
+        spec.setIndicator(getString(R.string.tab_2_steps));
         host.addTab(spec);
         host.setCurrentTab(lastTabPosition);
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String s) {
                 lastTabPosition = host.getCurrentTab();
-                //Toast.makeText(getActivity(),String.valueOf(lastTabPosition),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -132,11 +148,13 @@ public class DetailFragment extends Fragment {
         LinearLayoutManager stepLayoutManager = new LinearLayoutManager(getActivity());
         stepRecyclerView.setLayoutManager(stepLayoutManager);
         stepRecyclerView.setHasFixedSize(true);
-        StepAdapter stepAdapter = new StepAdapter(stepArrayList, getActivity());
+        //To highlight the position
+        StepAdapter stepAdapter = new StepAdapter(stepArrayList, getActivity(),lastStepPosition);
         stepRecyclerView.setAdapter(stepAdapter);
+        stepRecyclerView.getLayoutManager().scrollToPosition(lastStepPosition);
     }
 
-    private void stepItemTouchListenerOnePane() {
+    private void stepItemTouchListenerPhone() {
         stepRecyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(),
                 stepRecyclerView, new RecyclerViewItemClickListener.OnItemClickListener() {
             @Override
@@ -149,9 +167,9 @@ public class DetailFragment extends Fragment {
                 intent.putExtra("bundle", videoBundle);
                 startActivity(intent);
             }
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
+            //@Override
+            //public void onLongItemClick(View view, int position) {
+            //}
         }));
     }
 
@@ -161,12 +179,13 @@ public class DetailFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 lastStepPosition = position;
+                setupStepRecyclerView(); //For item selection color and scroll to position
                 step = stepArrayList.get(position);
                 replaceVideoFragment(step);
             }
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
+            //@Override
+            //public void onLongItemClick(View view, int position) {
+            //}
         }));
     }
 

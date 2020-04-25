@@ -1,7 +1,6 @@
 package com.example.android.bakingapp.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,16 +20,20 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
 
     private ArrayList<Step> stepArrayList;
     private Context context;
+    private int rowNo;
 
-    public StepAdapter(ArrayList<Step> stepArrayList, Context context) {
+
+    public StepAdapter(ArrayList<Step> stepArrayList, Context context, int position) {
         this.stepArrayList = stepArrayList;
         this.context = context;
+        this.rowNo = position;
     }
 
-    class StepViewHolder extends RecyclerView.ViewHolder  {
+    class StepViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.tv_id) TextView idTextView;
         @BindView(R.id.tv_short_description) TextView stepTextView;
+
 
         public StepViewHolder(View itemView) {
             super(itemView);
@@ -41,19 +44,14 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
     @NonNull
     @Override
     public StepAdapter.StepViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.step_item;
+        //Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        StepAdapter.StepViewHolder viewHolder = new StepAdapter.StepViewHolder(view);
-
-        return viewHolder;
+        View view = inflater.inflate(R.layout.step_item, viewGroup, false);
+        return new StepAdapter.StepViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(StepAdapter.StepViewHolder holder, final int position) {
+    public void onBindViewHolder(final StepAdapter.StepViewHolder holder, final int position) {
         Integer stepNumber;
         if(position==0){
             holder.idTextView.setText(R.string.space);
@@ -62,9 +60,10 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
             holder.idTextView.setText(String.valueOf(stepNumber));
         }
         holder.stepTextView.setText(stepArrayList.get(position).getShortDescription());
-
+        if (rowNo==position) {
+            holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorSelected));
+        }
     }
-
 
     @Override
     public int getItemCount() {

@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Ingredient implements Parcelable {
 
-
     @SerializedName("quantity")
     @Expose
     private float quantity;

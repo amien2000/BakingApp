@@ -1,10 +1,8 @@
 package com.example.android.bakingapp.ui;
 
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -44,7 +42,6 @@ public class VideoFragment extends Fragment{
     boolean mShouldPlayWhenReady = true;
     int mWindowIndex;
     Uri mVideoUri;
-    Bitmap mVideoThumbnailImage;
 
     private static final String ARG_VID_URL = "mVideoURL";
     private static final String ARG_NAIL_URL = "mVideoThumbnail";
