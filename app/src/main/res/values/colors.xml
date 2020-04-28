@@ -8,5 +8,6 @@
     <color name="dark_gray">#A9A9A9</color>
     <color name="colorCardView">#81C784</color>
     <color name="colorSelected">#FFCCBC</color>
+    <color name="colorButton">#607D8B</color>
 
 </resources>

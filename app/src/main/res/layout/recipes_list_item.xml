@@ -65,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:padding="5dp"
+                android:textColor="@color/white"
                 android:text="Steps"  />
 
 

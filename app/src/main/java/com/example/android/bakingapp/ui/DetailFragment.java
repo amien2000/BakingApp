@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 
+import com.example.android.bakingapp.DetailActivity;
 import com.example.android.bakingapp.R;
 import com.example.android.bakingapp.VideoActivity;
 import com.example.android.bakingapp.adapter.IngredientAdapter;
@@ -26,17 +28,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.view.View.GONE;
-
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment {
 
     Step step;
-    String name;
-    StepAdapter stepAdapter;
+    String name, description;
     ArrayList<Step> stepArrayList;
     ArrayList<Ingredient> ingredientArrayList;
 
@@ -78,14 +76,20 @@ public class DetailFragment extends Fragment {
 
         setupTab();
         setupIngredientRecyclerView();
-        setupStepRecyclerView();
 
-        if (savedInstanceState==null){
-           replaceVideoFragment(stepArrayList.get(lastStepPosition));
-        }
         if (getActivity().findViewById(R.id.linearLayoutsw600dp) != null) {
+            //Tablet initial setup with video auto-play and auto-select step introduction
+            if (savedInstanceState==null){
+                replaceVideoFragment(stepArrayList.get(lastStepPosition));
+            }
+            setupStepRecyclerView();
             stepItemTouchListenerTablet();
+            description = stepArrayList.get(lastStepPosition).getDescription();
+            ((DetailActivity) getActivity()).setTvDescription(description);
         } else {
+            //Phone initial setup with no initial step selection
+            lastStepPosition = -1;
+            setupStepRecyclerView();
             stepItemTouchListenerPhone();
         }
         return rootView;
@@ -163,7 +167,7 @@ public class DetailFragment extends Fragment {
                 Bundle videoBundle = new Bundle();
                 videoBundle.putParcelableArrayList("steps", stepArrayList);
                 videoBundle.putInt("position", position);
-                videoBundle.putString("name", name);
+                videoBundle.putString("name",name);
                 intent.putExtra("bundle", videoBundle);
                 startActivity(intent);
             }
@@ -182,10 +186,9 @@ public class DetailFragment extends Fragment {
                 setupStepRecyclerView(); //For item selection color and scroll to position
                 step = stepArrayList.get(position);
                 replaceVideoFragment(step);
+                description = stepArrayList.get(lastStepPosition).getDescription();
+                ((DetailActivity) getActivity()).setTvDescription(description);
             }
-            //@Override
-            //public void onLongItemClick(View view, int position) {
-            //}
         }));
     }
 

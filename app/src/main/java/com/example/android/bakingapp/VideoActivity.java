@@ -1,17 +1,16 @@
 package com.example.android.bakingapp;
 
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.android.bakingapp.models.Step;
-import com.example.android.bakingapp.utils.ExoUtil;
-import com.example.android.bakingapp.utils.NetworkUtil;
+import com.example.android.bakingapp.ui.VideoFragment;
 
 import java.util.ArrayList;
 
@@ -22,27 +21,29 @@ import android.support.constraint.Group;
 import android.support.constraint.Guideline;
 import android.widget.Toast;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 
 public class VideoActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private static final String KEY_BUNDLE = "bundle";
+    private static final String KEY_STEPS = "steps";
+    private static final String KEY_POSITION = "position";
+    private static final String KEY_NAME = "name";
+    private static final Float guideLineFullScreen = 1f;
+    private static final Float guideLineNonFullScreen = 0.5f;
+
     ArrayList<Step> stepArrayList;
     Bundle extras;
-    String name;
     int position;
-    String url;
+    String name;
 
-    ExoUtil exoUtil;
-    int mVideoNumber;
-    String description;
-    Uri uri;
-
-    @BindView(R.id.tv_step_title) TextView tvStepTitle;
-    @BindView(R.id.tv_step_description) TextView tvStepDescription;
+    @BindView(R.id.tv_description) TextView tvStepDescription;
     @BindView(R.id.btn_previous_step1) Button btnPreviousStep;
     @BindView(R.id.btn_next_step1) Button btnNextStep;
     @BindView(R.id.grp_non_fullscreen) Group grpNonFullScreen;
-    @BindView(R.id.guidelineUpper) Guideline gdLineUpper;
-    @BindView(R.id.guidelineLower) Guideline gdLineLower;
+    @BindView(R.id.video_fragment) FrameLayout flVideoFragment;
+    @BindView(R.id.gl_bottom) Guideline glBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,100 +51,94 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_video);
         ButterKnife.bind(this);
 
-        extras = getIntent().getBundleExtra("bundle");
-        name = extras.getString("name");
-        position = extras.getInt("position");
-        stepArrayList = extras.getParcelableArrayList("steps");
-        url = stepArrayList.get(position).getVideoURL();
+        extras = getIntent().getBundleExtra(KEY_BUNDLE);
+        stepArrayList = extras.getParcelableArrayList(KEY_STEPS);
+        position = extras.getInt(KEY_POSITION);
+        name = extras.getString(KEY_NAME);
 
-        mVideoNumber = extras.getInt("position");
-        description = stepArrayList.get(mVideoNumber).getDescription();
-        tvStepDescription.setText(description);
-
-        getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(name);
 
-        initializeExoPlayer(mVideoNumber);
+        if (savedInstanceState == null) {
+        replaceVideoFragment(stepArrayList.get(position));
+        }
         renderView(getResources().getConfiguration());
     }
 
     @Override
-    public void onDestroy() {
-        //Release the player when the activity is destroyed.
-        super.onDestroy();
-        if (exoUtil != null) {
-            exoUtil.releasePlayer();
-        }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_POSITION,position);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        renderView(newConfig);
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        position=savedInstanceState.getInt(KEY_POSITION);
+        renderView(getResources().getConfiguration());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_previous_step1:
-                if(mVideoNumber==0) {
-                    Toast toast = Toast.makeText(this,R.string.next_step,Toast.LENGTH_SHORT);
+                if(position==0) {
+                    Toast toast = Toast.makeText(this,R.string.next_step, LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
                 }else{
-                    mVideoNumber--;
-                    exoUtil.releasePlayer();
-                    description = stepArrayList.get(mVideoNumber).getDescription();
-                    tvStepDescription.setText(description);
-                    initializeExoPlayer(mVideoNumber);
+                    position--;
+                    updateUIText();
+                    replaceVideoFragment(stepArrayList.get(position));
                 }
                 break;
             case R.id.btn_next_step1:
-                if(mVideoNumber==stepArrayList.size()-1){
-                    Toast toast = Toast.makeText(this,R.string.previous_step,Toast.LENGTH_SHORT);
+                if(position==stepArrayList.size()-1){
+                    Toast toast = Toast.makeText(this,R.string.previous_step,LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
                 }else {
-                    mVideoNumber++;
-                    exoUtil.releasePlayer();
-                    description = stepArrayList.get(mVideoNumber).getDescription();
-                    tvStepDescription.setText(description);
-                    initializeExoPlayer(mVideoNumber);
+                    position++;
+                    updateUIText();
+                    replaceVideoFragment(stepArrayList.get(position));
                     break;
                 }
         }
     }
 
-    private void initializeExoPlayer(int videoNumber) {
-        url = stepArrayList.get(videoNumber).getVideoURL();
-        //Make sure internet and video are available to run the video link
-        NetworkUtil networkUtil = new NetworkUtil(this, url);
-        networkUtil.networkMessage();
-        if(url!="") {
-            exoUtil = new ExoUtil(this,null );
-            uri = Uri.parse(url);
-
-
-            exoUtil.initializePlayerActivity(uri);
+    public void renderView(Configuration newConfig){
+        // Checks the orientation of the screen and implement full screen if landscape
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            updateUIText();
+            glBottom.setGuidelinePercent(guideLineFullScreen);
+            grpNonFullScreen.setVisibility(View.GONE);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            glBottom.setGuidelinePercent(guideLineNonFullScreen);
+            grpNonFullScreen.setVisibility(View.VISIBLE);
+            btnPreviousStep.setOnClickListener(this);
+            btnNextStep.setOnClickListener(this);
+            updateUIText();
         }
     }
 
-    public void renderView(Configuration newConfig){
-        if(findViewById(R.id.linearLayoutsw600dp) == null) {
-            // Checks the orientation of the screen
-            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                gdLineUpper.setGuidelinePercent(0);
-                gdLineLower.setGuidelinePercent(1);
-                grpNonFullScreen.setVisibility(View.GONE);
-                exoUtil.fullScreenMode();
-            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                gdLineUpper.setGuidelinePercent(0.15f);
-                gdLineLower.setGuidelinePercent(0.85f);
-                grpNonFullScreen.setVisibility(View.VISIBLE);
-                btnPreviousStep.setOnClickListener(this);
-                btnNextStep.setOnClickListener(this);
-                exoUtil.nonFullScreenMode();
-            }
-        }
+    public void updateUIText(){
+        //String shortDescription = stepArrayList.get(position).getShortDescription();
+        String description = stepArrayList.get(position).getDescription();
+        //getSupportActionBar().setTitle(shortDescription);
+        tvStepDescription.setText(description);
+    }
+
+    public void replaceVideoFragment(Step step){
+        //Extract only video and thumbnail url
+        String vidURL = step.getVideoURL();
+        String nailURL = step.getThumbnailURL();
+        String desc = step.getDescription();
+
+        //Factory method to pass bundle to fragment
+        VideoFragment videoFragment = VideoFragment.newVideoFragmentInstance(vidURL,nailURL,desc);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.video_fragment, videoFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

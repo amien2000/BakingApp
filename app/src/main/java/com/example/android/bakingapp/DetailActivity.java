@@ -1,15 +1,14 @@
 package com.example.android.bakingapp;
 
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.android.bakingapp.models.Ingredient;
 import com.example.android.bakingapp.models.Step;
 import com.example.android.bakingapp.ui.DetailFragment;
-import com.example.android.bakingapp.ui.VideoFragment;
 
 import java.util.ArrayList;
 
@@ -23,6 +22,7 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<Ingredient> ingredientArrayList;
     Bundle extras;
 
+    @Nullable @BindView(R.id.tv_description) TextView tvDescription;
     @Nullable @BindView(R.id.linearLayoutsw600dp) LinearLayout tablet;
 
     @Override
@@ -68,5 +68,9 @@ public class DetailActivity extends AppCompatActivity {
                 .replace(R.id.fragmentOne, detailFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void setTvDescription(String stepDescription) { //Method for detailFragment to send data
+        tvDescription.setText(stepDescription);
     }
 }

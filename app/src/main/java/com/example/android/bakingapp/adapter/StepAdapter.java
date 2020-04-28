@@ -51,7 +51,7 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
     }
 
     @Override
-    public void onBindViewHolder(final StepAdapter.StepViewHolder holder, final int position) {
+    public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
         Integer stepNumber;
         if(position==0){
             holder.idTextView.setText(R.string.space);
@@ -61,7 +61,12 @@ public class StepAdapter  extends RecyclerView.Adapter<StepAdapter.StepViewHolde
         }
         holder.stepTextView.setText(stepArrayList.get(position).getShortDescription());
         if (rowNo==position) {
-            holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorSelected));
+            holder.itemView.setBackgroundColor(context.getResources()
+                    .getColor(R.color.colorSelected));
+        }else
+        {
+            holder.itemView.setBackground(context.getResources()
+                    .getDrawable(android.R.drawable.dialog_holo_light_frame));
         }
     }
 

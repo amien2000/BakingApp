@@ -1,6 +1,5 @@
 package com.example.android.bakingapp.ui;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.bakingapp.R;
@@ -54,7 +52,6 @@ public class VideoFragment extends Fragment{
 
     @BindView(R.id.iv_video_placeholder) ImageView mImageViewPlaceholder;
     @BindView(R.id.playerView) PlayerView mPlayerView;
-    @BindView(R.id.tv_descriptionsw600) TextView tv_description;
 
     public static VideoFragment newVideoFragmentInstance(String vidURL, String nailURL, String desc){
         VideoFragment videoFragment = new VideoFragment();
@@ -124,14 +121,12 @@ public class VideoFragment extends Fragment{
     public void onStart() {
         super.onStart();
         initializeVideoPlayer(mVideoUri);
-        tv_description.setText(mDescription);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initializeVideoPlayer(mVideoUri);
-        tv_description.setText(mDescription);
     }
 
     @Override
@@ -156,15 +151,17 @@ public class VideoFragment extends Fragment{
             DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
 
             // Create an instance of the ExoPlayer.
-            mSimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
+            mSimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector,
+                    loadControl);
 
             // Bind the player to the view.
             mPlayerView = getView().findViewById(R.id.playerView);
             mPlayerView.setPlayer(mSimpleExoPlayer);
 
-            DataSource.Factory dataSourceFactory =
-                    new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getActivity(), String.valueOf(R.string.app_name)));
-            MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
+                    Util.getUserAgent(getActivity(), String.valueOf(R.string.app_name)));
+            MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(videoUri);
 
             // Prepare the player with the source.
             mSimpleExoPlayer.prepare(mediaSource);

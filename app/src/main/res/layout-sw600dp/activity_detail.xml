@@ -15,17 +15,45 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="2dp"
-        tools:context=".DetailActivity" />
+        tools:context=".DetailActivity">
 
-    <FrameLayout
-        android:id="@+id/video_fragment"
+    </FrameLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:padding="2dp"
-        tools:context=".DetailActivity">
-    </FrameLayout>
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/video_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="@color/white"
+            android:padding="2dp"
+            android:layout_margin="8dp"
+            tools:context=".DetailActivity">
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:gravity="left"
+            android:padding="8dp"
+            android:text="Recipe Description"
+            android:textStyle="bold"
+            android:background="@color/colorCardView"
+            android:scrollbars="vertical"
+            android:textSize="@dimen/content_text_size"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
 
